@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="MSUI: Build mobile apps with simple HTML, CSS, and JS components.">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="css/sm.css">
+    <link rel="stylesheet" href="css/sm-extend.css">
+    <link rel="stylesheet" href="css/demos.css">
+    <link rel="apple-touch-icon-precomposed" href="/assets/img/apple-touch-icon-114x114.png">
+    <script src="js/zepto.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/sm.js"></script>
+    <script src="js/sm-extend.js"></script>
+    <script src="js/sm-city-picker.js"></script>
+    <script src="js/demos.js"></script>
+     <script src="js/parameters.js"></script>
+
+  </head>
+  <body>
+    <div class="page-group">
+    <div id="page-layout" class="page">
+  <header class="bar bar-nav">
+    <h1 class="title">Request added/Modified</h1>
+  </header>
+  <div class="content">
+    <div class="list-block">
+      <ul>
+      	<input id = "userEmployeeID" type="hidden" >   
+        
+        <li>
+          <div class="item-content">
+            <div class="item-media"><i class="icon icon-form-name"></i></div>
+            <div class="item-inner">
+              <div class="item-title label">ID</div>
+              <div class="item-input">
+                <input id = "userID" type="text" placeholder="0" value=0>
+              </div>
+            </div>
+          </div>
+        </li>
+        
+        
+        
+        <li>
+          <div class="item-content">
+            <div class="item-media"><i class="icon icon-form-name"></i></div>
+            <div class="item-inner">
+              <div class="item-title label">Requester</div>
+              <div class="item-input">
+                <input id = "userRealName" type="text" placeholder="0">
+              </div>
+            </div>
+          </div>
+        </li>
+      	     
+        <li>
+          <div class="item-content">
+            <div class="item-media"><i class="icon icon-form-calendar"></i></div>
+            <div class="item-inner">
+              <div class="item-title label">Issue date</div>
+              <div class="item-input">
+                <input id = "userIssueDate" type="date" placeholder="Birth day" value="2018-08-30">
+              </div>
+            </div>
+          </div>
+        </li>
+          
+        <li>
+          <div class="item-content">
+            <div class="item-media"><i class="icon icon-form-name"></i></div>
+            <div class="item-inner">
+              <div class="item-title label">Request Quantity</div>
+              <div class="item-input">
+                <input id = "userRequest" type="text" placeholder="0">
+              </div>
+            </div>
+          </div>
+        </li>
+ 
+       <li class="align-top">
+          <div class="item-content">
+            <div class="item-media"><i class="icon icon-form-comment"></i></div>
+            <div class="item-inner">
+              <div class="item-title label">Remark</div>
+              <div class="item-input">
+                <textarea id = "userRemark"></textarea>
+              </div>
+            </div>
+          </div>
+        </li>
+
+    <div class="content-block">
+      <div class="row">
+      	<div class="col-50"><a href="#" class="button button-big button-fill button-success" onclick="Submit()">Submit</a></div>
+        <div class="col-50"><div id="errorMsg"><span style="color: red;"></span></div></div>
+      </div>
+    </div>
+    
+  </div>
+ </div>
+
+</div>
+
+
+<script type='text/javascript'>   
+	var test1;
+	function GetRequest() {
+				var url = window.location.search; //获取url中"?"符后的字串 
+				var theRequest = new Object();
+				if (url.indexOf("?") != -1) {
+				var str = url.substr(1);
+				strs = str.split("&");
+				for (var i = 0; i < strs.length; i++) {
+				theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+				}
+				}
+				return theRequest;
+				}
+	
+	 var Request = GetRequest();
+   var id = Request["id"];
+   var employeeID = Request["employeeID"];
+   var realName = Request["realName"];
+   console.log("id:"+id);
+   console.log("employeeID:"+employeeID);
+   console.log("realName:"+realName);
+    if (id == undefined || id =="undefined"){
+　　  $("#userID").val(0);
+     }
+    else
+    { $("#userID").val(id);}
+  
+   $("#userEmployeeID").val(employeeID);
+   $("#userRealName").val(realName);
+   
+   if (id != null)
+   {
+   //get Data for id
+    var datas = {'id' : id};
+    var url =  hosturl+"/InvoiceByIDJSON"; 
+    $(function (){
+		 $.ajax({
+			type : 'POST',
+	        //contentType : 'application/json',
+	        url : url,
+	        async : false,
+	        dataType : 'json',
+	        data : datas,
+	         xhrFields: {
+            withCredentials: true
+           },  
+	        success : function(data) {
+	        		    console.log(data);
+	        		    $("#userID").val(data.id);	
+	                $("#userIssueDate").val(data.creationDate);	
+								  $("#userRemark").val(data.remark);	
+								  $("#userRequest").val(data.amount);	
+								  $("#userEmployeeID").val(data.employeeID);	  
+								  $("#userRealName").val(data.realName);
+	        },
+	        error : function() {
+	        	  //document.getElementById('errorMsg').innerHTML="<span style='color: red;'>login Failed</span>";	
+	        	  $("#errorMsg").html("<span style='color: red;'>login Failed</span>");	
+	        }
+	        
+		 })
+	    });
+   }
+	
+	function Submit() {
+		var creationDate= $("#userIssueDate").val();	
+	  var remark=$("#userRemark").val();	
+	  var amount=$("#userRequest").val();	
+	  var employeeID=$("#userEmployeeID").val();	
+	  var invoiceid=$("#userID").val();
+	  
+	   if (invoiceid == undefined || invoiceid =="undefined"){
+　　  invoiceid = 0;
+     }
+	  
+	var url =  hosturl+"/InvoiceSaveJSON"; 
+	var datas = {'id' : invoiceid,'employeeID' : employeeID, 'creationDate' : creationDate,'remark':remark ,'amount': amount};
+	test1=datas;
+	 $(function (){
+		 $.ajax({
+			type : 'POST',
+	        url : url,
+	        async : false,
+	        dataType : 'json',
+	        data : datas,
+	         xhrFields: {
+            withCredentials: true
+            },
+            
+	        success : function(data) {
+	        	if (data.flag == 0) {
+	        		
+	        	     	console.log("Update successed");
+	                $("#errorMsg").html(data.message);
+	        		    window.location.href="invoiceList.html";
+	                }
+	        	else {             	            	
+	        		
+	        		  $("#errorMsg").html("<span style='color: red;'>"+data.message+"</span>");
+       	    }
+	        	
+	        },
+	        error : function() {
+	        	  //document.getElementById('errorMsg').innerHTML="<span style='color: red;'>login Failed</span>";	
+	        	  $("#errorMsg").html("<span style='color: red;'>Update Failed</span>");	
+	        }
+	        
+		 })
+	    });
+	    
+     
+		    
+		   
+	 
+	}
+	 
+	
+</script>
+   
+  </body>
+</html>

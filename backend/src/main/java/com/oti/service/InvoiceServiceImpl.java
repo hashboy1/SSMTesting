@@ -42,7 +42,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	public void insertInvoice(Invoice invoice)
 	{
-		if (invoice.getId() == null || invoice.getId().equals(""))	
+		if (invoice.getId() == null || invoice.getId() == 0)	
 			{
 			invoiceDao.insertInvoice(invoice);
 			}

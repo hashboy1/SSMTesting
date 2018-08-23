@@ -14,7 +14,7 @@
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
     </bean>
      
-     <!-- 引入jdbc配置文件 -->  
+     <!-- 引入jdbc配置文件,已经舍弃 -->  
      <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
@@ -40,23 +40,22 @@
     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean"/>	
 
 	<!-- 配置数据源 -->
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		
-	   <!-- 使用properties来配置 -->
-		<property name="driverClassName">
-			<value>com.mysql.jdbc.Driver</value>
-		</property>
-		<property name="url">
-			<value>jdbc:mysql://127.0.0.1:3306/oti</value>
-		</property>
-		<property name="username">
-			<value>root</value>
-		</property>
-		<property name="password">
-			<value>root</value>
-		</property>
-	</bean>
+     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+              <property name="driverClassName"> 
+                     <value>com.mysql.jdbc.Driver</value> 
+              </property> 
+              <property name="url"> 
+                     <value>jdbc:mysql://192.168.0.249:3306/testdb?useUnicode=true&amp;characterEncoding=utf-8</value> 
+              </property> 
+              <property name="username"> 
+                     <value>vrkb</value> 
+              </property> 
+              <property name="password"> 
+                     <value>3dms</value> 
+              </property>      
+       </bean> 
+
+
 
 	<!-- 自动扫描了所有的XxxxMapper.xml对应的mapper接口文件，这样就不用一个一个手动配置Mpper的映射了，只要Mapper接口类和Mapper映射文件对应起来就可以了。 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">

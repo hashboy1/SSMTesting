@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -74,6 +75,11 @@ public class LoginController extends BaseController {
 					request.getSession().setAttribute("Role", employee.getRole());
 					request.getSession().setAttribute("Department", employee.getDepartment());	
 					
+					 Cookie cookie = new Cookie("RealName",employee.getRealName());
+					 cookie.setMaxAge(10 * 60);// 设置存在时间为10分钟
+				     cookie.setPath("/");//设置作用域
+				     response.addCookie(cookie);//将cookie添加到response的cookie数组中返回给客户端
+					
 					return "redirect:InvoiceMain.do";
 
 				} else {
@@ -94,7 +100,7 @@ public class LoginController extends BaseController {
 	@ResponseBody
 	public String loginJSON(HttpServletRequest request, HttpServletResponse response,Employee empp) throws IOException {
 		
-		response.setHeader("Access-Control-Allow-Origin", "*");
+		//response.setHeader("Access-Control-Allow-Origin", "*");
 		Message msg=new Message();
 		response.setCharacterEncoding("UTF-8");  
         response.setContentType("text/html;charset=UTF-8");     

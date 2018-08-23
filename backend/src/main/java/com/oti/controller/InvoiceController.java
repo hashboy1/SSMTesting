@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,6 +30,7 @@ import com.github.pagehelper.Page;
 import com.oti.dao.EmployeeDao;
 import com.oti.domain.Employee;
 import com.oti.domain.Invoice;
+import com.oti.domain.Message;
 import com.oti.service.EmployeeService;
 import com.oti.service.EmployeeServiceImpl;
 import com.oti.service.InvoiceService;
@@ -142,8 +144,26 @@ public class InvoiceController  {
 			emp.setRealName((String) request.getSession().getAttribute("RealName"));
 			emp.setRole((String) request.getSession().getAttribute("Role"));
 			emp.setDepartment((String) request.getSession().getAttribute("Department"));	
-			System.out.println("Employee List:"+JSON.toJSONString(emp));
 			
+			 System.out.println("Session Employee List:"+JSON.toJSONString(emp));
+			
+			Cookie[] cookies = request.getCookies();
+	        if (null==cookies) {
+	            System.out.println("没有cookies");
+	        } else {
+	            for(Cookie cookie : cookies){
+	                //迭代时如果发现与指定cookieName相同的cookie，就修改相关数据
+	                if(cookie.getName().equals("RealName")){
+	                	emp.setRealName(cookie.getValue());
+	                    cookie.setValue("RealName");//修改value
+	                    cookie.setPath("/");
+	                    cookie.setMaxAge(10 * 60);// 修改存活时间
+	                    response.addCookie(cookie);//将修改过的cookie存入response，替换掉旧的同名cookie
+	                    break;
+	                }
+	            }
+	        }  
+	        System.out.println("Cookie Employee List:"+JSON.toJSONString(emp));		
 	    	} catch (Exception e) {
 			   e.printStackTrace();
 			   return "error";
@@ -152,6 +172,103 @@ public class InvoiceController  {
 			return JSON.toJSONString(emp);
 		}
 	
+		@RequestMapping(value="/InvoiceMainJSON")  
+		@ResponseBody
+		public String InvoiceMainJSON(HttpServletRequest request, HttpServletResponse response){
+				
+			List<Invoice> invList = null;
+	     	try {    
+			    //if (request.getSession().getAttribute("EmployeeID") ==null)  return "redirect:login.do";	
+				int EmployeeID=(Integer) request.getSession().getAttribute("EmployeeID");
+				String EmployeeNO=(String) request.getSession().getAttribute("EmployeeNO");
+				String RealName=(String) request.getSession().getAttribute("RealName");
+				String Role=(String) request.getSession().getAttribute("Role");
+				String Department=(String) request.getSession().getAttribute("Department");	
+			
+				System.out.println("EmployeeID:" + EmployeeID);
+				System.out.println("Role:" +Role);
+				System.out.println("Department:" +Department);	
+				
+				
+
+				if (Role.equals("TL")) 
+				{
+					 invList =invoiceService.selectInvoiceByDepartment(Department);
+					 Calendar cal=Calendar.getInstance();  
+					 int d=cal.get(Calendar.DATE); 
+					 System.out.println("current Day:"+d);
+				}
+					
+				if (Role.equals("TM"))
+				{
+					 invList =invoiceService.selectInvoiceByEmployeeID(EmployeeID);
+				}
+				if (Role.equals("ADMIN"))
+				{
+					 invList =invoiceService.selectInvoiceAll();
+				}
+				
+				
+				System.out.println("invoice List:"+invList.toString());
+	    	    
+	    	} catch (Exception e) {
+			   e.printStackTrace();
+			   return "error";
+			}
+
+		     return JSON.toJSONString(invList);
+		}
+			
+		@RequestMapping(value="/InvoiceByIDJSON")  
+		@ResponseBody
+		 public String InvoiceByIDJSON(HttpServletRequest request, HttpServletResponse response,Invoice inv){
+ 
+			System.out.println("input parameters:"+inv.toString());  
+			Invoice inv2= invoiceService.selectInvoiceByID(inv.getId());
+			System.out.println("output parameters:"+inv2.toString());  
+			
+			return JSON.toJSONString(inv2);
+		 }
+		
+		
+		@RequestMapping(value="/InvoiceSaveJSON")  
+		@ResponseBody
+		public String InvoiceSaveJSON(HttpServletRequest request, HttpServletResponse response,Invoice inv){
+			Message msg=new Message();
+		try {
+			    
+				int EmployeeID=(Integer) request.getSession().getAttribute("EmployeeID");
+				String EmployeeNO=(String) request.getSession().getAttribute("EmployeeNO");
+				String RealName=(String) request.getSession().getAttribute("RealName");
+				String Role=(String) request.getSession().getAttribute("Role");
+				String Department=(String) request.getSession().getAttribute("Department");	
+				
+				System.out.println("EmployeeID:" + EmployeeID);
+				System.out.println("Role:" +Role);
+				System.out.println("Department:" +Department);
+				
+				if (inv.getEmployeeID() ==null ||inv.getEmployeeID().equals("")||inv.getEmployeeID().equals("undefined")) inv.setEmployeeID(EmployeeID);
+				if (inv.getAmount() == null ||inv.getAmount().equals(0)) 
+				{
+					  msg.setFlag(-1);
+					  msg.setMessage(" Please input request quantity!");	
+				}
+				else
+				{
+			    System.out.println("before update:"+inv.toString());
+				invoiceService.insertInvoice(inv);
+				 msg.setFlag(0);
+				}
+	    	    
+	    	} catch (Exception e) {
+			   e.printStackTrace();
+			   msg.setFlag(-1);
+			   msg.setMessage(e.toString());
+			}
+
+	        return JSON.toJSONString(msg);
+		}
+		
 	
 	
 	 @RequestMapping("/InsertInvoice")

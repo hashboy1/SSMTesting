@@ -2,6 +2,10 @@ package com.oti.util;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpUtils;
+
+import org.springframework.http.HttpStatus;
+
 import java.io.IOException;
  
 
@@ -14,15 +18,22 @@ public class CrossFilter implements Filter{
         HttpServletResponse response= (HttpServletResponse) servletResponse;
         HttpServletRequest request=(HttpServletRequest)servletRequest;
         String origin= servletRequest.getRemoteHost()+":"+servletRequest.getRemotePort();
-      //response.setHeader("Access-Control-Allow-Origin","*");
+      response.setHeader("Access-Control-Allow-Origin","*");
+        //response.setHeader("Access-Control-Allow-Headers", "Authentication");
+     
+        //response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Headers", "Authentication");
         response.setHeader("Access-Control-Allow-Methods","POST,GET,OPTIONS,DELETE");
         response.setHeader("Access-Control-Allow-Credentials","true");
         response.setHeader("Access-Control-Max-Age","3600");
-        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
-       
-        
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with,Content-Type,Authorization");
+      
+        if (request.getMethod().equals("OPTIONS")) {
+            System.out.println("option request!!");
+            response.setStatus(200);   
+           
+            
+        }
        
        
         filterChain.doFilter(servletRequest,servletResponse);

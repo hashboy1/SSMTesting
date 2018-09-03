@@ -20,7 +20,7 @@
     <script src="js/sm-extend.js"></script>
     <script src="js/sm-city-picker.js"></script>
     <script src="js/demos.js"></script>
-     <script src="js/parameters.js"></script>
+    <script src="js/parameters.js"></script>
 
   </head>
   <body>
@@ -79,25 +79,31 @@
 	var url =  hosturl+"/loginJSON"; 
 	var datas = {'EmployeeNO' : employeeNO,'Password':password};
 	console.log("parameters:"+datas.valueOf());
-	 $(function (){
+
 		 $.ajax({
 			type : 'POST',
 	        //contentType : 'application/json',
 	        url : url,
 	        async : false,
 	        dataType : 'json',
-	        data : datas,
-	        
+	        data : datas, 
+	         /*
+	         headers: {
+	           Authorization1: "token",
+				   },
+	       
 	         xhrFields: {
             withCredentials: true
             },
-            
+          */  
 	        success : function(data) {
 	        	if (data.flag == 0) {
 	        		
 	        		console.log("login successed");
-	                $("#errorMsg").html(data.message);
-	        		window.location.href="invoiceList.html";
+	            $("#errorMsg").html(data.message);
+	            console.log("token:"+data.token);
+	            localStorage.setItem("token",data.token);
+	            window.location.href="invoiceList.html";
 	                }
 	        	else {             	            	
 	        		
@@ -110,8 +116,8 @@
 	        	  $("#errorMsg").html("<span style='color: red;'>login Failed</span>");	
 	        }
 	        
-		 })
-	    });
+		 });
+	  
 	 
 	}
 	 

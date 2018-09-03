@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Router,Route } from 'react-router'
+
 import logo from './logo.svg';
 import './Login.css';
 import classNames from 'classnames';
@@ -20,8 +21,8 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import $ from 'jquery';
 import InvoiceList from './InvoiceList';
-import history from './history';
 import  './config';
+import {createBrowserHistory, createHashHistory, createMemoryHistory} from 'history'
 
 const styles = theme => ({
     root: {
@@ -46,6 +47,10 @@ const styles = theme => ({
     },
 
 });
+
+const history = createBrowserHistory()
+
+
 
 class InputAdornments extends React.Component {
     state = {
@@ -89,6 +94,7 @@ class InputAdornments extends React.Component {
                    // window.location.href='./InvoiceList';
 
                     ReactDOM.render(( <Router history={history}><Route path='/InvoiceList/:employeeNO' component={InvoiceList}/></Router>), document.getElementById('root'));
+                    //history.push('/InvoiceList/'+employeeNO);
                     history.push('/InvoiceList/'+employeeNO);
                     //window.location.href="invoiceList.html";
                    // this.props.history.push("/InvoiceList");

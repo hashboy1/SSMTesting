@@ -15,7 +15,10 @@
     <link rel="stylesheet" href="css/sm-extend.css">
     <link rel="stylesheet" href="css/demos.css">
     <link rel="apple-touch-icon-precomposed" href="/assets/img/apple-touch-icon-114x114.png">
-    <script src="js/zepto.js"></script>
+   
+    	    <script src="js/zepto.js"></script> 
+  
+
     <script src="js/config.js"></script>
     <script src="js/sm.js"></script>
     <script src="js/sm-extend.js"></script>
@@ -48,26 +51,39 @@
 	
 	var realName;
 	var employeeID;
+	var token;
+	
+	token=localStorage.getItem("token");
+	console.log("local storage token:"+token);
 	//get the login use when the page document is ready
 	 $(document).ready(function(){
 		 $.ajax({
-			type : 'POST',
-	        url : hosturl+"/GetLoginUser.do",
+			    type : 'POST',
+	        //url : hosturl+"/GetLoginUser.do?token="+token,    
+	        url : hosturl+"/GetLoginUser.do", 
 	        async : false,
 	        dataType : 'json',   
 	        xhrFields: {
             withCredentials: true
-           },    
+           },  
+
+				   headers: {
+				   	    Authorization:token,   
+				   },
+				   /*
+				   beforeSend: function(request) {                
+               request.setRequestHeader("Authorization", token);
+    			},
+				  */
 	        success : function(data) {
-        
              	console.log(data.valueOf());
-             	console.log(data);
+             	//console.log(data);
              	document.getElementById('welcomeMsg').innerHTML='Welcome '+data.realName;	  
              	realName=data.realName;
              	employeeID=data.id;
 	        },
 	        error : function() {
-	        	alert("error!");
+	        	alert("get login user error!");
 	        }
 		 })
 	  });
@@ -87,6 +103,9 @@
 	       xhrFields: {
             withCredentials: true
            },
+           headers: {
+				   	    Authorization:token,   
+				   },
 	        success : function(data) {
 	        	if (data.length > 0 ) {
 	                $(data).each(function(){//重新生成	

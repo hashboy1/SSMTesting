@@ -51,14 +51,14 @@ public class Employee {
 		Department = department;
 	}
 	
-	/*
+
 	@Override
 	public String toString() {
 		return "Employee [Id=" + Id + ", EmployeeNO=" + EmployeeNO + ", RealName=" + RealName + ", Password=" + Password
 				+ ", Role=" + Role + ", Department=" + Department + "]";
 	}
 
-*/
+
 	
 	
 	

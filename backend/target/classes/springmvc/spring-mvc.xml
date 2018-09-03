@@ -20,7 +20,7 @@
    
    
    
-       <!-- 会自动注册了validator  ConversionService  -->
+    <!-- 会自动注册了validator  ConversionService  -->
     <mvc:annotation-driven validator="validator" conversion-service="conversionService" content-negotiation-manager="contentNegotiationManager">
         <mvc:message-converters register-defaults="true">
             <!-- StringHttpMessageConverter编码为UTF-8，防止乱码 -->

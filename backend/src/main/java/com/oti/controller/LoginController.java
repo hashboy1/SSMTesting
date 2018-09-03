@@ -25,6 +25,7 @@ import com.oti.domain.Employee;
 import com.oti.domain.Message;
 import com.oti.service.EmployeeService;
 import com.oti.util.Encryption;
+import com.oti.util.JWT;
 import com.oti.util.PagedResult;
 
 
@@ -106,6 +107,7 @@ public class LoginController extends BaseController {
         response.setContentType("text/html;charset=UTF-8");     
 		String userName = empp.getEmployeeNO();
 		String userPassword = empp.getPassword();
+		String token=null;
 		System.out.println("EmployeeNO:" + userName);
 		System.out.println("Password:" + userPassword);
 
@@ -130,15 +132,23 @@ public class LoginController extends BaseController {
 					System.out.println("Role:" + employee.getRole());
 					System.out.println("Department:" + employee.getDepartment());
 					
+					
+					/*
 					//add the login information to Session
 					request.getSession().setAttribute("EmployeeID", employee.getId());
 					request.getSession().setAttribute("EmployeeNO", employee.getEmployeeNO());
 					request.getSession().setAttribute("RealName", employee.getRealName());
 					request.getSession().setAttribute("Role", employee.getRole());
 					request.getSession().setAttribute("Department", employee.getDepartment());	
+					*/
+					
+					
+					token = JWT.sign(employee, 30L * 24L * 3600L * 1000L);
+					System.out.println("token:" + token);
 					
 					msg.setFlag(0);
 					msg.setMessage("login Successed");
+					msg.setToken(token);
 
 				} else {
 					

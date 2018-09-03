@@ -111,6 +111,7 @@
 
 <script type='text/javascript'>   
 	var test1;
+	var token
 	function GetRequest() {
 				var url = window.location.search; //获取url中"?"符后的字串 
 				var theRequest = new Object();
@@ -156,6 +157,7 @@
 	         xhrFields: {
             withCredentials: true
            },  
+          
 	        success : function(data) {
 	        		    console.log(data);
 	        		    $("#userID").val(data.id);	

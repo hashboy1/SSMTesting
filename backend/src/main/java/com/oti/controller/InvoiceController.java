@@ -34,6 +34,7 @@ import com.oti.domain.Message;
 import com.oti.service.EmployeeService;
 import com.oti.service.EmployeeServiceImpl;
 import com.oti.service.InvoiceService;
+import com.oti.util.JWT;
 import com.oti.util.PagedResult;
 
 import java.util.List;
@@ -138,15 +139,23 @@ public class InvoiceController  {
 		@ResponseBody
 		public String GetLoginUser(HttpServletRequest request, HttpServletResponse response,Model moder){
               Employee emp = new Employee();
+              String token;
 		try {    
+			
+			token=request.getHeader("Authorization");
+			//token=request.getParameter("token");
+			System.out.println("token received:"+token);
+			if (token != null && !token.equals(""))
+			{
+			emp=JWT.unsign(token, Employee.class);
+			System.out.println("Token Employee List:"+emp.toString());
+			}
+			/* 
 			emp.setId((Integer) request.getSession().getAttribute("EmployeeID"));
 			emp.setEmployeeNO((String) request.getSession().getAttribute("EmployeeNO"));
 			emp.setRealName((String) request.getSession().getAttribute("RealName"));
 			emp.setRole((String) request.getSession().getAttribute("Role"));
 			emp.setDepartment((String) request.getSession().getAttribute("Department"));	
-			
-			 System.out.println("Session Employee List:"+JSON.toJSONString(emp));
-			
 			Cookie[] cookies = request.getCookies();
 	        if (null==cookies) {
 	            System.out.println("没有cookies");
@@ -162,8 +171,8 @@ public class InvoiceController  {
 	                    break;
 	                }
 	            }
-	        }  
-	        System.out.println("Cookie Employee List:"+JSON.toJSONString(emp));		
+	        } 
+	        */ 
 	    	} catch (Exception e) {
 			   e.printStackTrace();
 			   return "error";
@@ -177,8 +186,11 @@ public class InvoiceController  {
 		public String InvoiceMainJSON(HttpServletRequest request, HttpServletResponse response){
 				
 			List<Invoice> invList = null;
+			String token;
+			Employee emp;
 	     	try {    
-			    //if (request.getSession().getAttribute("EmployeeID") ==null)  return "redirect:login.do";	
+			    /*
+	     		//if (request.getSession().getAttribute("EmployeeID") ==null)  return "redirect:login.do";	
 				int EmployeeID=(Integer) request.getSession().getAttribute("EmployeeID");
 				String EmployeeNO=(String) request.getSession().getAttribute("EmployeeNO");
 				String RealName=(String) request.getSession().getAttribute("RealName");
@@ -188,22 +200,29 @@ public class InvoiceController  {
 				System.out.println("EmployeeID:" + EmployeeID);
 				System.out.println("Role:" +Role);
 				System.out.println("Department:" +Department);	
+				*/
+				
+				token=request.getHeader("Authorization");
+				if (token == null || token.equals("")) return "";
+				System.out.println("token received:"+token);
+				emp=JWT.unsign(token, Employee.class);
+                
 				
 				
 
-				if (Role.equals("TL")) 
+				if (emp.getRole().equals("TL")) 
 				{
-					 invList =invoiceService.selectInvoiceByDepartment(Department);
+					 invList =invoiceService.selectInvoiceByDepartment(emp.getDepartment());
 					 Calendar cal=Calendar.getInstance();  
 					 int d=cal.get(Calendar.DATE); 
 					 System.out.println("current Day:"+d);
 				}
 					
-				if (Role.equals("TM"))
+				if (emp.getRole().equals("TM"))
 				{
-					 invList =invoiceService.selectInvoiceByEmployeeID(EmployeeID);
+					 invList =invoiceService.selectInvoiceByEmployeeID(emp.getId());
 				}
-				if (Role.equals("ADMIN"))
+				if (emp.getRole().equals("ADMIN"))
 				{
 					 invList =invoiceService.selectInvoiceAll();
 				}

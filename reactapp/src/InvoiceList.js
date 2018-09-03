@@ -15,7 +15,16 @@ import $ from 'jquery';
 import InvoiceEdit from './InvoiceEdit';
 import history from './history';
 import  './config';
+import Login from './Login';
 
+
+
+window.addEventListener("popstate",function() {
+
+    ReactDOM.render(( <Router history={history}><Route path='/Login' component={Login}/></Router>), document.getElementById('root'));
+    history.push('/Login');
+
+});
 
 
 const CustomTableCell = withStyles(theme => ({
@@ -60,6 +69,8 @@ const rows = [
 ];
 rows.push( createData('cc', 356, 16.0, 49, 3.9),);
 */
+
+
 
 
 const rows = [];

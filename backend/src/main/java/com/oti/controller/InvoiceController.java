@@ -206,10 +206,7 @@ public class InvoiceController  {
 				if (token == null || token.equals("")) return "";
 				System.out.println("token received:"+token);
 				emp=JWT.unsign(token, Employee.class);
-                
-				
-				
-
+               
 				if (emp.getRole().equals("TL")) 
 				{
 					 invList =invoiceService.selectInvoiceByDepartment(emp.getDepartment());
@@ -227,7 +224,6 @@ public class InvoiceController  {
 					 invList =invoiceService.selectInvoiceAll();
 				}
 				
-				
 				System.out.println("invoice List:"+invList.toString());
 	    	    
 	    	} catch (Exception e) {
@@ -244,8 +240,7 @@ public class InvoiceController  {
  
 			System.out.println("input parameters:"+inv.toString());  
 			Invoice inv2= invoiceService.selectInvoiceByID(inv.getId());
-			System.out.println("output parameters:"+inv2.toString());  
-			
+			System.out.println("output parameters:"+inv2.toString());  	
 			return JSON.toJSONString(inv2);
 		 }
 		
@@ -254,8 +249,10 @@ public class InvoiceController  {
 		@ResponseBody
 		public String InvoiceSaveJSON(HttpServletRequest request, HttpServletResponse response,Invoice inv){
 			Message msg=new Message();
+			Employee emp;
+			String token;
 		try {
-			    
+			    /*
 				int EmployeeID=(Integer) request.getSession().getAttribute("EmployeeID");
 				String EmployeeNO=(String) request.getSession().getAttribute("EmployeeNO");
 				String RealName=(String) request.getSession().getAttribute("RealName");
@@ -265,8 +262,16 @@ public class InvoiceController  {
 				System.out.println("EmployeeID:" + EmployeeID);
 				System.out.println("Role:" +Role);
 				System.out.println("Department:" +Department);
-				
-				if (inv.getEmployeeID() ==null ||inv.getEmployeeID().equals("")||inv.getEmployeeID().equals("undefined")) inv.setEmployeeID(EmployeeID);
+				*/
+			
+
+			token=request.getHeader("Authorization");
+			if (token == null || token.equals("")) return "";
+			System.out.println("token received:"+token);
+			emp=JWT.unsign(token, Employee.class);
+			
+			
+				if (inv.getEmployeeID() ==null ||inv.getEmployeeID().equals("")||inv.getEmployeeID().equals("undefined")) inv.setEmployeeID(emp.getId());
 				if (inv.getAmount() == null ||inv.getAmount().equals(0)) 
 				{
 					  msg.setFlag(-1);

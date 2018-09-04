@@ -111,7 +111,10 @@
 
 <script type='text/javascript'>   
 	var test1;
-	var token
+	var token;
+	token=localStorage.getItem("token");
+	console.log("local storage token:"+token);
+	
 	function GetRequest() {
 				var url = window.location.search; //获取url中"?"符后的字串 
 				var theRequest = new Object();
@@ -200,7 +203,9 @@
 	         xhrFields: {
             withCredentials: true
             },
-            
+           beforeSend: function(request) {                
+               request.setRequestHeader("Authorization", token);
+    			},
 	        success : function(data) {
 	        	if (data.flag == 0) {
 	        		

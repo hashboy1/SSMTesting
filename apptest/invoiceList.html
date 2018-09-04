@@ -66,15 +66,15 @@
 	        xhrFields: {
             withCredentials: true
            },  
-
+           /*
 				   headers: {
 				   	    Authorization:token,   
 				   },
-				   /*
+				    */
 				   beforeSend: function(request) {                
                request.setRequestHeader("Authorization", token);
     			},
-				  */
+				 
 	        success : function(data) {
              	console.log(data.valueOf());
              	//console.log(data);
@@ -103,9 +103,9 @@
 	       xhrFields: {
             withCredentials: true
            },
-           headers: {
-				   	    Authorization:token,   
-				   },
+         beforeSend: function(request) {                
+               request.setRequestHeader("Authorization", token);
+    			},
 	        success : function(data) {
 	        	if (data.length > 0 ) {
 	                $(data).each(function(){//重新生成	
@@ -115,7 +115,7 @@
 	                   html= html+"<div style='background-image:url(http://gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i3/TB10LfcHFXXXXXKXpXXXXXXXXXX_!!0-item_pic.jpg_250x250q60.jpg)' valign='bottom' class='card-header color-white no-border'> Real Name:" + this.realName + ",Request quantity:" +this.amount + "</div>";
 	                   html= html+"<div class='card-content'><div class='card-content-inner'>";
 								     html= html+"<p class='color-gray'>at " +  this.creationDate+   "</p> <p>"+ this.remark +"</p></div></div>";
-								     html= html+"<div class='card-footer'><a href='#' class='link' onclick=window.open('"+ newwin +"') >Edit</a></div> </div>";
+								     html= html+"<div class='card-footer'><a href='#' class='link' onclick=window.location.href='"+ newwin +"' >Edit</a></div> </div>";
 	                   $("#content").append(html);
 	                
 	                })

@@ -31,11 +31,9 @@ public class CrossFilter implements Filter{
         if (request.getMethod().equals("OPTIONS")) {
             System.out.println("option request!!");
             response.setStatus(200);   
-           
-            
+
         }
-       
-       
+
         filterChain.doFilter(servletRequest,servletResponse);
     }
 

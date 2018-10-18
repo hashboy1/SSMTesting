@@ -40,7 +40,6 @@ public class LoginController extends BaseController {
 	@RequestMapping("/login")  
 	public String login(HttpServletRequest request, HttpServletResponse response,Model moder) throws IOException {
 		
-		
 		response.setCharacterEncoding("UTF-8");  
         response.setContentType("text/html;charset=UTF-8");     
 		String userName = request.getParameter("userName");
